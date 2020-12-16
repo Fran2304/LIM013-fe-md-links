@@ -1,35 +1,31 @@
 /* eslint-disable no-unused-expressions */
 
-import fetch from 'node-fetch';
-
 /* eslint-disable object-shorthand */
 const fs = require('fs');
 const marked = require('marked');
 const jsdom = require('jsdom');
-// const fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 const { JSDOM } = jsdom;
 
-// const renderer = new marked.Renderer();
+// const renderer = new marked.Renderer(); PROBAR :)
 const path = require('path');
 
 // Example paths
-const fileRelative = '..\\README.md';
+// const fileRelative = '..\\README.md';
 const fileAbsolute = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\a.md';
 const dirAbsolute = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1';
 // const dirRelative = '..\\example\\dir1';
+// const emptyDirectory = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1\\dir3';
 
 // Validate if the route exists. Return a boolean value
-export const routeExist = (route) => fs.existsSync(route);
-console.log('exists:', routeExist(fileRelative));
+const routeExist = (route) => fs.existsSync(route);
 
-// Iy is a path absolute? Return a boolean value
-export const pathIsAbsolute = (route) => path.isAbsolute(route);
-console.log('is absolute?:', pathIsAbsolute(fileAbsolute));
+// It is a path absolute? Return a boolean value
+const pathIsAbsolute = (route) => path.isAbsolute(route);
 
 // Replace a relative  path to absolute path
-export const transformAbsolute = (route) => path.resolve(route);
-console.log('transform abosule:', transformAbsolute(fileRelative));
+const transformAbsolute = (route) => path.resolve(route);
 
 // Estructura de file. Es el ino quien dice que tipo de archivo es.
 // const viewStat = (route) => fs.lstatSync(route);
@@ -37,27 +33,43 @@ console.log('transform abosule:', transformAbsolute(fileRelative));
 // console.log('what file', viewStat(fileAbsolute));
 
 // It is a directory? Return a boolean
-export const verifyDirectory = (route) => fs.lstatSync(route).isDirectory();
-console.log('is directory?', verifyDirectory(dirAbsolute));
+const verifyDirectory = (route) => fs.lstatSync(route).isDirectory();
 
 // It is a file? Return a boolean
 const verifyFile = (route) => fs.lstatSync(route).isFile();
-console.log('is file?', verifyFile(dirAbsolute));
 
 // ---------------------- It is a md file? ---------------
 // Método path.extname nos da la extensión.
-export const extensionFile = (route) => path.extname(route);
-console.log('extension', extensionFile(fileAbsolute));
+const extensionFile = (route) => path.extname(route);
+// console.log('extension', extensionFile(fileAbsolute));
 
-const validateMd = (extensionFile(fileAbsolute) === '.md') ? 'true' : 'false';
-console.log('is it md', validateMd);
+// const validateMd = (extensionFile(fileAbsolute) === '.md') ? 'true' : 'false';
+// console.log('is it md', validateMd);
 
 // -------------------------- Read files--------------------
 // Con readFileSync se lee archivo, codificación x default es utf8. Se obtiene el contenido en
 // en contenido markdown.
-export const contentFile = (route) => fs.readFileSync(route, 'utf8');
-// console.log(contentFile(fileAbsolute));
-// const contentAll = contentFile(fileAbsolute);
+const contentFile = (route) => fs.readFileSync(route, 'utf8');
+
+// -------------------------- Read directory ---------------------
+const readDir = (route) => fs.readdirSync(route); // Encuentra files y archivos dentro de un directorio y devuelve un arreglo con los "Nombres" no con ruta de estos
+// console.log('READ DIRECTORY', readDir(dirAbsolute));
+// --------------------- Leyendo directorio --------------
+// Usando recursividad. Primero se identifica caso base "verifyFile "y de ahí caso de recursividad "readDir". No usar array externo.
+// Retorna un array con todos los paths de los archivos, incluso los que se encnentran dentro de un directorio
+const walkDirectory = (route) => {
+  let allFiles = [];
+  if (verifyFile(route)) {
+    allFiles.push(route); // Push añade elementos y modifica el array existente
+  } else {
+    readDir(route).forEach((element) => {
+      // const completedPath = `${path}\\${element}`; //puede haber problemas en otros sistemas operativos
+      const completedPath = path.join(route, element); // Como solo tenemos e nombre y la ruta padre, lo unimos para obtener la ruta completa :)
+      allFiles = allFiles.concat(walkDirectory(completedPath));// Concat une array y se guarda en una variable.
+    });
+  }
+  return allFiles;
+};
 
 // -----------------------------Extrayendo links con regular expresions ---------
 // const regEx = /\[.+\]\(https:\/\/?.*\)/gi;
@@ -65,36 +77,10 @@ export const contentFile = (route) => fs.readFileSync(route, 'utf8');
 // console.log(contentAll.match(regEx)); // Se obtiene un array con todas las coincidencias.
 // console.log(regEx.exec(contentAll)); // Se obtiene un array, devuelve solo el primero en coincidir
 // ----------------------- Extrayendo links con marked y con jsdom --------------------
-// Primero usando marked se cambia el cotenido a html, usando el paquete jsdon se extrane las etiquetas <a></a>
-//
-
-// Turn markdown into a html
-// const html = marked(contentFile(fileAbsolute));
-// console.log(html);
-
-// const dom = new JSDOM(html);
-// const links = dom.window.document.querySelectorAll('a');
-// console.log('links', links);
-// const prueba = Array.from(links);
-// console.log('prueba', prueba[0]);
-// const arrayLinks = [];
-// links.forEach((link) => {
-//   arrayLinks.push({
-//     file: fileAbsolute,
-//     href: link.href,
-//     text: link.text,
-//   });
-// });
-// console.log('array links', arrayLinks);
-
-const getMdLinks = (route) => {
-  const html = marked(contentFile(route));
-  // console.log(html);
+const getLinks = (route) => {
+  const html = marked(contentFile(route)); // se usa marked para transformar el contenido de md a html <>
   const dom = new JSDOM(html);
-  const links = dom.window.document.querySelectorAll('a');
-  // console.log('links', links);
-  // const prueba = Array.from(links);
-  // // console.log('prueba', prueba[0]);
+  const links = dom.window.document.querySelectorAll('a'); // Detecta elementos que coincidad con la etiqueta <a></a>. Devuelve los elementos en un array.
   const arrayLinks = [];
   links.forEach((link) => {
     arrayLinks.push({
@@ -106,75 +92,51 @@ const getMdLinks = (route) => {
   return arrayLinks;
 };
 
-const readDir = (route) => fs.readdirSync(route);
-console.log(readDir(dirAbsolute));
-// --------------------- Leyendo directorio --------------
-// Usando recursividad. Primero se identifica caso base y de ahí caso de recursividad
-
-const walk = (route) => {
-  let allFiles = [];
-  if (verifyFile(route)) {
-    allFiles.push(route);
-  } else {
-    readDir(route).forEach((element) => {
-      // const completedPath = `${path}\\${element}`; //puede haber problemas en otros sitemas operativos
-      const completedPath = path.join(route, element);
-      allFiles = allFiles.concat(walk(completedPath));
-    });
-  }
-  return allFiles;
-};
-console.log('recursividad', walk(dirAbsolute));
-
-// --------------------------- mdlinks ------------------------
-
-const mdlinks = (route, options) => {
+// -------Extraer md links ----------------
+// Retorna un array donce cada objeto tiene las propiedades de file, text y href
+// eslint-disable-next-line consistent-return
+const getMdlinks = (route) => {
   if (routeExist(route)) {
-    let routeToVerify = 0;
-    if (pathIsAbsolute(route)) {
-      routeToVerify = route;
-      // console.log('siempre fue absoluta', routeToVerify);
+    const routeToVerify = pathIsAbsolute(route) ? route : transformAbsolute(route);
+    const filesToVerify = walkDirectory(routeToVerify);
+    const arrayMd = filesToVerify.filter((file) => extensionFile(file) === '.md');
+    if (arrayMd.length === 0) {
+      console.log('No hay md files');
     } else {
-      routeToVerify = transformAbsolute(route);
-      // console.log('fue relativa y cambió', routeToVerify);
-    }
-    let filesToVerify = 0;
-    if (verifyDirectory(routeToVerify)) {
-      filesToVerify = walk(routeToVerify);
-      // console.log('aqui es directorio', filesToVerify);
-    } else {
-      filesToVerify = [routeToVerify];
-      console.log('aqui es file', filesToVerify);
-    }
-    const arrayMd = [];
-    filesToVerify.forEach((file) => {
-      if (extensionFile(file) === '.md') {
-        arrayMd.push(file);
-      }
-      if (arrayMd.length === '') {
-        console.log('No hay archivos md');
-      }
-    });
-    console.log('arrayMd', arrayMd);
-    let arrayLinks = [];
-    arrayMd.forEach((file) => {
-      arrayLinks = arrayLinks.concat(getMdLinks(file));
-      // console.log(getMdLinks(file));
-    });
-    console.log(arrayLinks);
-    if (options.validate === true) {
-      // eslint-disable-next-line array-callback-return
-      arrayLinks.forEach((element) => {
-        fetch(element.href).then((res) => {
-          console.log(element.href, element.text, element.file, res.status, res.statusText);
-        }).catch((error) => {
-          console.log(error);
-        });
+      let arrayLinks = [];
+      arrayMd.forEach((file) => {
+        arrayLinks = arrayLinks.concat(getLinks(file));
       });
+      return arrayLinks;
     }
   } else {
     console.log('La ruta no existe');
   }
 };
+getMdlinks(dirAbsolute);
 
-mdlinks(dirAbsolute, { validate: true });
+// ------------------------- option Validate-----------------
+const validate = (route) => {
+  const arrayLinks = getMdlinks(route);
+  const allLinks = arrayLinks.map((element) => fetch(element.href).then((res) => ({
+    href: element.href,
+    text: element.text,
+    file: element.file,
+    status: res.status,
+    message: res.statusText,
+  })).catch((error) => ({
+    href: element.href,
+    text: element.text,
+    file: element.file,
+    status: 'fail',
+    message: error.message,
+  })));
+  return Promise.all(allLinks);
+  // Promise.all(allLinks).then((response) => {
+  //   console.log(response);
+  // });
+};
+
+module.exports = {
+  getMdlinks, routeExist, pathIsAbsolute, transformAbsolute, verifyDirectory, extensionFile, contentFile, readDir, verifyFile, validate, walkDirectory,
+};
