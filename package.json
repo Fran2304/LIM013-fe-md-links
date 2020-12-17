@@ -1,6 +1,6 @@
 {
   "name": "fran-mdlinks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Show links and statistics of mdfiles",
   "main": "src/cli.js",
   "directories": {
