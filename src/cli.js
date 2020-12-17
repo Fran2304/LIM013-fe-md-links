@@ -34,7 +34,6 @@ ${'* ' + chalk.blueBright('To get statistics (total, unique, broken, valid)') + 
 `;
 
 function cli() {
-  console.log(stats, statsS);
   if (help >= 0) { // Si se coloca help
     console.log(guide);
   } else if (route && (validate >= 0 || validateV >= 0) && (stats >= 0 || statsS >= 0)) { // Si se coloca ruta validate y stats
@@ -53,7 +52,7 @@ function cli() {
     }).catch((error) => {
       console.log(error);
     });
-  } else if ((route && validate <= 0 && stats) || (route && validate <= 0 && statsS)) { // Si se coloca ruta y stats
+  } else if ((route && validate <= 0 && stats >= 0) || (route && (validate <= 0) && statsS >= 0)) { // Si se coloca ruta y stats
     mdlinks(route, { validate: false }).then((response) => {
       console.log(optionStats(response));
     });
@@ -67,3 +66,7 @@ function cli() {
 }
 
 cli();
+
+module.exports = {
+  cli,
+};

@@ -131,27 +131,27 @@ describe('getMdlinks', () => {
   it('return all the files in the directory. recursive ', () => {
     expect(index.getMdlinks(dirAbsolute)).toEqual([
       {
-        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\a.md',
+        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1\\b.md',
         href: 'https://es.wikipedia.org/wiki/Markdown',
         text: 'Markdown',
       },
       {
-        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\a.md',
+        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1\\b.md',
         href: 'https://nodejs.org/es/',
         text: 'Node.js',
       },
       {
-        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\a.md',
+        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1\\b.md',
         href: 'https://developers.google.com/v8/',
         text: 'motor de JavaScript V8 de Chrome',
       },
       {
-        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\a.md',
+        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1\\b.md',
         href: 'https://es.wikipedia.org/wiko/Markdown',
         text: 'wiko',
       },
       {
-        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\a.md',
+        file: 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1\\b.md',
         href: 'https://nodejs.org/es/',
         text: 'Node.js',
       },

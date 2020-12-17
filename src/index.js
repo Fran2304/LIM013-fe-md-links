@@ -70,13 +70,13 @@ const walkDirectory = (route) => {
   }
   return allFiles;
 };
-
 // -----------------------------Extrayendo links con regular expresions ---------
 // const regEx = /\[.+\]\(https:\/\/?.*\)/gi;
 
 // console.log(contentAll.match(regEx)); // Se obtiene un array con todas las coincidencias.
 // console.log(regEx.exec(contentAll)); // Se obtiene un array, devuelve solo el primero en coincidir
 // ----------------------- Extrayendo links con marked y con jsdom --------------------
+// Se obtiene array de objetos. Cada objeto es un link con sus propiedades.
 const getLinks = (route) => {
   const html = marked(contentFile(route)); // se usa marked para transformar el contenido de md a html <>
   const dom = new JSDOM(html);
@@ -84,14 +84,14 @@ const getLinks = (route) => {
   const arrayLinks = [];
   links.forEach((link) => {
     arrayLinks.push({
-      file: fileAbsolute,
+      file: route,
       href: link.href,
-      text: link.text,
+      text: (link.text).substring(0, 50),
     });
   });
   return arrayLinks;
 };
-
+// console.log(getLinks(fileAbsolute));
 // -------Extraer md links ----------------
 // Retorna un array donce cada objeto tiene las propiedades de file, text y href
 // eslint-disable-next-line consistent-return
@@ -113,14 +113,14 @@ const getMdlinks = (route) => {
     console.log('La ruta no existe');
   }
 };
-getMdlinks(dirAbsolute);
+// console.log(getMdlinks(dirAbsolute));
 
 // ------------------------- option Validate-----------------
 const validate = (route) => {
   const arrayLinks = getMdlinks(route);
   const allLinks = arrayLinks.map((element) => fetch(element.href).then((res) => ({
     href: element.href,
-    text: element.text,
+    text: (element.text).substring(0, 50),
     file: element.file,
     status: res.status,
     message: res.statusText,

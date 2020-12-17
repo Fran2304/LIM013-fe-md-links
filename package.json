@@ -1,8 +1,8 @@
 {
-  "name": "lim013-fe-md-links",
+  "name": "fran-mdlinks",
   "version": "1.0.0",
-  "description": "validate mdlinks",
-  "main": "src/index.js",
+  "description": "Show links and statistics of mdfiles",
+  "main": "src/cli.js",
   "directories": {
     "test": "test"
   },
@@ -26,7 +26,7 @@
     "node",
     "js"
   ],
-  "author": "Francesca Tiravantti Arteaga",
+  "author": "Francesca Tiravantti Arteaga lilatiravanttiarteaga@gmail.com",
   "license": "MIT",
   "bin": {
     "mdlinks": "src/cli.js"
@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "commander": "^6.2.1",
     "jsdom": "^16.4.0",
     "marked": "^1.2.5",
     "node-fetch": "^2.6.1"
