@@ -15,7 +15,7 @@ const path = require('path');
 // const fileRelative = '..\\README.md';
 const fileAbsolute = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\a.md';
 const dirAbsolute = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1';
-// const dirRelative = '..\\example\\dir1';
+const dirRelative = '..\\example\\dir1';
 // const emptyDirectory = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1\\dir3';
 
 // Validate if the route exists. Return a boolean value
@@ -106,6 +106,9 @@ const getMdlinks = (route) => {
       let arrayLinks = [];
       arrayMd.forEach((file) => {
         arrayLinks = arrayLinks.concat(getLinks(file));
+        if (arrayLinks.length === 0) {
+          console.log('No se encontó links');
+        }
       });
       return arrayLinks;
     }
@@ -113,7 +116,7 @@ const getMdlinks = (route) => {
     console.log('La ruta no existe');
   }
 };
-// console.log(getMdlinks(dirAbsolute));
+// console.log(getMdlinks(dirRelative));
 
 // ------------------------- option Validate-----------------
 const validate = (route) => {
@@ -125,6 +128,7 @@ const validate = (route) => {
     status: res.status,
     message: res.statusText,
   })).catch((error) => ({
+    // ...element,
     href: element.href,
     text: element.text,
     file: element.file,

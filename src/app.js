@@ -15,6 +15,7 @@ const mdlinks = (route, options) => {
     // optionStats(optionValidate(dirAbsolute));
   }
   const getPromise = Promise.resolve(getMdlinks(route)); /// Se usó promise.resolve
+  // return Promise.resolve(getMdlinks(route));
   return getPromise;
   // getPromise.then((response) => {
   //   console.log(response);
@@ -23,8 +24,9 @@ const mdlinks = (route, options) => {
   // console.log(index.getMdlinks(route));
 };
 
-const dirAbsolute = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1';
-mdlinks(dirAbsolute, { validate: true });
+// const dirAbsolute = 'D:\\Proyectos\\LIM013-fe-md-links\\example\\dir1';
+// const dirRelative = 'example\\dir1';
+// mdlinks(dirAbsolute, { validate: true });
 
 module.exports = {
   mdlinks,

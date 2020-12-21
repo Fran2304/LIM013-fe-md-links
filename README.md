@@ -20,7 +20,7 @@ Es una librería que te permite extraer links de archivos md. De igual modo tamb
 
 ### 2. Cli
 
-![diagramacli](src/imagenes/diagramaflujoapi.jpg)
+![diagramacli](src/imagenes/diagramaflujocli.jpg)
 
 ***
 
